@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block head %}
+    <style>
+        .img-fluid {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-sm-center mt-2">
+            <div class="col-sm-auto">
+                <h1>{{ greeting }}</h1>
+                <img class="rounded-circle img-fluid" alt="profile picture" src="{% static 'main/images/profile.jpg' %}">
+                <p></p>
+                <p>I'm Rayun. I make stuff occasionally.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center mt-4">
+            <div class="col-sm-3 justify-content-sm-right">
+                <h2><span class="text-decoration-line-through">Anti</span>Socials</h2>
+                <p>You can find me around</p>
+            </div>
+            <div class="col-sm-3 justify-content-sm-left">
+                <a href="https://github.com/rayun56">
+                    <button type="button" class="btn btn-outline-light">
+                        <i class="bi-github"></i> GitHub
+                    </button>
+                </a><br>
+                <a href="https://discord.com/users/344303001965428736" target="_blank">
+                    <button type="button" class="btn btn-outline-discord mt-1">
+                        <i class="bi-discord"></i> Discord
+                    </button>
+                </a><br>
+                <a href="https://www.youtube.com/channel/UCm-gsrBOz98_adj-XE9IxlA">
+                    <button type="button" class="btn btn-outline-youtube mt-1">
+                        <i class="bi-youtube"></i> YouTube
+                    </button>
+                </a><br>
+                <a href="https://twitter.com/rayun56">
+                    <button type="button" class="btn btn-outline-twitter mt-1">
+                        <i class="bi-twitter"></i> Not X
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
