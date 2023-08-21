@@ -19,7 +19,7 @@
                         <div class="col-sm-5">
                             <h2>{{ project.title }}</h2>
                             <p class="project-date">{{ project.date }}</p>
-                            <p class="project-desc">{{ project.description }}</p>
+                            <p class="project-desc">{% autoescape off %}{{ project.description }}{% endautoescape %}</p>
                             <div class="row mt-8">
                                 <div class="col-sm-12">
                                     {% if project.gh_link %}
