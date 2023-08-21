@@ -2,6 +2,17 @@
 {% block nav_projects %}active{% endblock %}
 {% load static %}
 
+{% block head %}
+    <style>
+        a {
+            color: #fff;
+            text-decoration: underline;
+            text-decoration-color: #fff;
+            text-decoration-thickness: 2px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <div class="row justify-content-sm-center mt-2">
@@ -26,7 +37,7 @@
                                         {% spaceless %}
                                         <a href="{{ project.gh_link }}">
                                             <i class="bi-github" style="color: white"></i>
-                                            <span class="project-link">View on GitHub</span>
+                                            <span>View on GitHub</span>
                                         </a>
                                         <br>
                                         {% endspaceless %}
@@ -35,7 +46,7 @@
                                         {% spaceless %}
                                         <a href="{{ project.yt_link }}">
                                             <i class="bi-youtube" style="color: red"></i>
-                                            <span class="project-link">View on YouTube</span>
+                                            <span>View on YouTube</span>
                                         </a>
                                         {% endspaceless %}
                                     {% endif %}

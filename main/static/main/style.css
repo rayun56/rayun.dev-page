@@ -47,12 +47,6 @@ p.project-date {
     background-color: var(--btn-color);
     border-color: var(--btn-color);
 }
-.project-link {
-    color: #fff;
-    text-decoration: underline;
-    text-decoration-color: #fff;
-    text-decoration-thickness: 2px;
-}
 .bg-footer {
     background-color: #2F3136;
 }
