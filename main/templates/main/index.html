@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
+{% block nav_index %}active{% endblock %}
 {% load static %}
-
-{% block title %}Home{% endblock %}
 
 {% block head %}
     <style>
@@ -18,14 +17,14 @@
             <div class="col-sm-auto">
                 <h1>{{ greeting }}</h1>
                 <img class="rounded-circle img-fluid" alt="profile picture" src="{% static 'main/images/profile.jpg' %}">
-                <p></p>
-                <p>I'm Rayun. I make stuff occasionally.</p>
+                <br><br>
+                <p class="basic-text">I'm Rayun. I make stuff occasionally.</p>
             </div>
         </div>
         <div class="row justify-content-center align-items-center mt-4">
             <div class="col-sm-3 justify-content-sm-right">
                 <h2><span class="text-decoration-line-through">Anti</span>Socials</h2>
-                <p>You can find me around</p>
+                <p class="basic-text">You can find me around</p>
             </div>
             <div class="col-sm-3 justify-content-sm-left">
                 <a href="https://github.com/rayun56">
