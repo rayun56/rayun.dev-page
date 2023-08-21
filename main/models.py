@@ -34,8 +34,9 @@ class Project(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        md5 = hashlib.md5()
-        for chunk in self.preview_image.chunks():
-            md5.update(chunk)
-        self.preview_image_hash = md5.hexdigest()
+        if self.preview_image:
+            md5 = hashlib.md5()
+            for chunk in self.preview_image.chunks():
+                md5.update(chunk)
+            self.preview_image_hash = md5.hexdigest()
         super(Project, self).save(*args, **kwargs)
