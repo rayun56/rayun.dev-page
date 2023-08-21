@@ -24,6 +24,7 @@ class Project(models.Model):
     yt_link = models.URLField(blank=True)
     preview_image = models.ImageField(upload_to=project_image_path, blank=True)
     tags = models.ManyToManyField('Tag', related_name='projects', blank=True)
+    visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

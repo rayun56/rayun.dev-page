@@ -14,39 +14,41 @@
             </div>
         </div>
             {% for project in projects %}
-                <div class="row justify-content-sm-center mt-2">
-                    <div class="col-sm-5">
-                        <h2>{{ project.title }}</h2>
-                        <p class="project-date">{{ project.date }}</p>
-                        <p class="project-desc">{{ project.description }}</p>
-                        <div class="row mt-8">
-                            <div class="col-sm-12">
-                                {% if project.gh_link %}
-                                    {% spaceless %}
-                                    <a href="{{ project.gh_link }}">
-                                        <i class="bi-github" style="color: white"></i>
-                                        <span class="project-link">View on GitHub</span>
-                                    </a>
-                                    <br>
-                                    {% endspaceless %}
-                                {% endif %}
-                                {% if project.yt_link %}
-                                    {% spaceless %}
-                                    <a href="{{ project.yt_link }}">
-                                        <i class="bi-youtube" style="color: red"></i>
-                                        <span class="project-link">View on YouTube</span>
-                                    </a>
-                                    {% endspaceless %}
-                                {% endif %}
+                {% if project.visible %}
+                    <div class="row justify-content-sm-center mt-2">
+                        <div class="col-sm-5">
+                            <h2>{{ project.title }}</h2>
+                            <p class="project-date">{{ project.date }}</p>
+                            <p class="project-desc">{{ project.description }}</p>
+                            <div class="row mt-8">
+                                <div class="col-sm-12">
+                                    {% if project.gh_link %}
+                                        {% spaceless %}
+                                        <a href="{{ project.gh_link }}">
+                                            <i class="bi-github" style="color: white"></i>
+                                            <span class="project-link">View on GitHub</span>
+                                        </a>
+                                        <br>
+                                        {% endspaceless %}
+                                    {% endif %}
+                                    {% if project.yt_link %}
+                                        {% spaceless %}
+                                        <a href="{{ project.yt_link }}">
+                                            <i class="bi-youtube" style="color: red"></i>
+                                            <span class="project-link">View on YouTube</span>
+                                        </a>
+                                        {% endspaceless %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
+                        {% if project.preview_image %}
+                            <div class="col-sm-5">
+                                <img src="{{ project.preview_image.url }}" class="img-fluid" alt="Project Preview Image">
+                            </div>
+                        {% endif %}
                     </div>
-                    {% if project.preview_image %}
-                        <div class="col-sm-5">
-                            <img src="{{ project.preview_image.url }}" class="img-fluid" alt="Project Preview Image">
-                        </div>
-                    {% endif %}
-                </div>
+                {% endif %}
                 {% if not forloop.last %}
                     <hr>
                 {% endif %}
