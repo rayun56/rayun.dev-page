@@ -27,9 +27,9 @@
             {% for project in projects %}
                 {% if project.visible %}
                     <div class="row justify-content-sm-center mt-2">
-                        <div class="col-sm-5">
+                        <div class="col-md-5">
                             <h2>{{ project.title }}</h2>
-                            <p class="project-date">{{ project.date }}</p>
+                            <p class="project-date">{{ project.date|date:"F Y" }}</p>
                             <p class="project-desc">{% autoescape off %}{{ project.description }}{% endautoescape %}</p>
                             <div class="row mt-8">
                                 <div class="col-sm-12">
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         {% if project.preview_image %}
-                            <div class="col-sm-5">
+                            <div class="col-md-5">
                                 <img src="{{ project.preview_image.url }}" class="img-fluid" alt="Project Preview Image">
                             </div>
                         {% endif %}
