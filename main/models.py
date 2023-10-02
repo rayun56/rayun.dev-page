@@ -40,3 +40,11 @@ class Project(models.Model):
                 md5.update(chunk)
             self.preview_image_hash = md5.hexdigest()
         super(Project, self).save(*args, **kwargs)
+
+
+class CrudtoberDay(models.Model):
+    day = models.IntegerField()
+    items = models.TextField()  # Delimited by newlines
+
+    def __str__(self):
+        return f"Day {self.day}"

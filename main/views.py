@@ -3,7 +3,7 @@ import random
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import Project
+from .models import Project, CrudtoberDay
 
 
 def index(request):
@@ -29,6 +29,19 @@ def projects(request):
     return render(request, 'main/projects.html', {
         'page': page,
         'projects': projects
+    })
+
+
+def crudtober(request):
+    page = {
+        'title': 'Crudtober',
+        'description': "A month-long challenge to do shit.",
+        'url': reverse('main:crudtober')
+    }
+    crud = CrudtoberDay.objects.all().order_by('day')
+    return render(request, 'main/crudtober.html', {
+        'page': page,
+        'crud': crud
     })
 
 

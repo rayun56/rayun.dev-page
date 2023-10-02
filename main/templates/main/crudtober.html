@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block nav_crudtober %}active{% endblock %}
+{% load static %}
+
+{% block content %}
+    <div class="container" data-bs-theme="dark">
+        <div class="row justify-content-sm-center mt-2">
+            <div class="col-sm-auto">
+                <h1>crudtober</h1>
+                <a class="badge bg-secondary" href="https://twitter.com/search?q=%23crudtober" target="_blank">#crudtober</a>
+                <h2 class="mt-2">What is crudtober?</h2>
+                <p>
+                    crudtober is the month-long challenge to do shit. Inspired by my friend David over at
+                    <a class="link-light" href="https://korio.me/crudtober/">korio.me</a>, the goal is to do something
+                    every day, rather than sit thinking about all the things you should be doing. A little one-off
+                    project here and there, or chipping away at a bigger project you know you gotta do.<br>
+                    My log will be below, and I'll try to update it daily. (As stated by David, feel free to try this
+                    out for yourself ^-^)
+                </p>
+                <hr>
+            </div>
+        </div>
+        <div class="row justify-content-left">
+            <div class="accordion" id="dayaccordion">
+                {% for crud_day in crud %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-{{ crud_day.day }}" aria-expanded="false" aria-controls="collapse-{{ crud_day.day }}">
+                                Day {{ crud_day.day }}
+                            </button>
+                        </h2>
+                        <div id="collapse-{{ crud_day.day }}" class="accordion-collapse collapse">
+                            <div class="accordion-body text-start">
+                                <p>{% autoescape off %}{{ crud_day.items }}{% endautoescape %}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
