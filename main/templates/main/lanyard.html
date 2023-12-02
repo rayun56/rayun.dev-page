@@ -1,0 +1,57 @@
+<div id="lanyard"
+     hx-post="{% url 'main:lanyard' %}"
+     hx-trigger="load delay:2s"
+     hx-swap="outerHTML"
+>
+{% if activities %}
+    <h4 class="text-center">Current Status</h4>
+{% endif %}
+{% for activity in activities %}
+    {% if activity.type == 0 %}
+        <div class="card bg-dark text-white mb-2">
+            <div class="row justify-content-left">
+                <div class="col-sm-auto">
+                    <div id="lanyard-large-img" class="card-img">
+                        <img
+                            src="{{ activity.large_image }}"
+                            alt="{{ activity.state }}"
+                            class="rounded ms-1 mt-1 mb-1"
+                            style="height: 100px; width: auto;"
+                        >
+                    </div>
+                    <div id="lanyard-small-img">
+                        <img
+                            src="{{ activity.small_image }}"
+                            alt="{{ activity.state }}"
+                            class="rounded mt-1 ms-1"
+                            style="height: 30px; width: auto;"
+                        >
+                    </div>
+                </div>
+                <div class="col-sm-auto">
+                    <div class="container-fluid justify-content-left">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ activity.name }}</h5>
+                            {% if activity.is_foobar %}
+                                <p class="card-text text-left mb-0">
+                                    {{ activity.title }} - {{ activity.artist }}<br>
+                                    {{ activity.str_progress }}
+                                </p>
+                                <div class="progress mt-0" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ activity.progress }}%;" aria-valuenow="{{ activity.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            {% else %}
+                                <p class="card-text text-left">
+                                    {{ activity.details }}<br>
+                                    {{ activity.state }}<br>
+                                    For {{ activity.time_since }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>

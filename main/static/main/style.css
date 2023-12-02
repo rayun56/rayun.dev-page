@@ -50,3 +50,8 @@ p.project-date {
 .bg-footer {
     background-color: #2F3136;
 }
+#lanyard-small-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

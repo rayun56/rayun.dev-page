@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import Project, CrudtoberDay
+from .lanyard_api import Lanyard
 
 
 def index(request):
@@ -47,3 +48,8 @@ def crudtober(request):
 
 def reserved(request):
     return render(request, 'main/reserved.html')
+
+
+def lanyard(request):
+    lan = Lanyard(344303001965428736)
+    return render(request, 'main/lanyard.html', lan.get_dict())
