@@ -47,7 +47,7 @@ class RichPresenceActivity:
         self.type = self.activity_info['type']
         self.id = self.activity_info['id']
         self.name = self.activity_info['name']
-        self.state = self.activity_info['state']
+        self.state = self.activity_info['state'] if 'state' in self.activity_info.keys() else ''
         if 'timestamps' in self.activity_info.keys():
             self.created_at = datetime.datetime.fromtimestamp(self.activity_info['timestamps']['start'] / 1000, tz=now().tzinfo)
         else:
@@ -58,9 +58,11 @@ class RichPresenceActivity:
             self.details = self.activity_info['details'] if 'details' in self.activity_info.keys() else ''
             self.application_id = self.activity_info['application_id']
             # Get url for images
-            self.large_image = self.get_image_link(self.activity_info['assets']['large_image'])
-            if 'small_image' in self.activity_info['assets'].keys():
-                self.small_image = self.get_image_link(self.activity_info['assets']['small_image'])
+            if 'assets' in self.activity_info.keys():
+                self.large_image = self.get_image_link(self.activity_info['assets']['large_image']) \
+                    if 'large_image' in self.activity_info['assets'].keys() else None
+                self.small_image = self.get_image_link(self.activity_info['assets']['small_image']) \
+                    if 'small_image' in self.activity_info['assets'].keys() else None
         self.foobar()
 
     def foobar(self):

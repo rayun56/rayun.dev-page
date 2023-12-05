@@ -31,7 +31,13 @@
                 <div class="col-sm-auto">
                     <div class="container-fluid justify-content-left">
                         <div class="card-body">
-                            <h5 class="card-title">{{ activity.name }}</h5>
+                            <h5 class="card-title">
+                                {% if activity.state %}
+                                    {{ activity.name }}
+                                {% else %}
+                                    Playing <b>{{ activity.name }}</b>
+                                {% endif %}
+                            </h5>
                             {% if activity.is_foobar %}
                                 <p class="card-text text-left mb-0">
                                     {{ activity.title }} - {{ activity.artist }}<br>
@@ -42,8 +48,12 @@
                                 </div>
                             {% else %}
                                 <p class="card-text text-left">
-                                    {{ activity.details }}<br>
-                                    {{ activity.state }}<br>
+                                    {% if activity.details %}
+                                        {{ activity.details }}<br>
+                                    {% endif %}
+                                    {% if activity.state %}
+                                        {{ activity.state }}<br>
+                                    {% endif %}
                                     For {{ activity.time_since }}
                                 </p>
                             {% endif %}
