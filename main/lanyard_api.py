@@ -55,7 +55,8 @@ class RichPresenceActivity:
         # get time since
         self.time_since = timesince(self.created_at, now())
         if self.type == 0:
-            self.details = self.activity_info['details']
+            if 'details' in self.activity_info.keys():
+                self.details = self.activity_info['details']
             self.application_id = self.activity_info['application_id']
             # Get url for images
             self.large_image = self.get_image_link(self.activity_info['assets']['large_image'])
