@@ -48,7 +48,7 @@ class RichPresenceActivity:
         self.id = self.activity_info['id']
         self.name = self.activity_info['name']
         self.state = self.activity_info['state'] if 'state' in self.activity_info.keys() else ''
-        if 'timestamps' in self.activity_info.keys():
+        if 'timestamps' in self.activity_info.keys() and 'start' in self.activity_info['timestamps'].keys():
             self.created_at = datetime.datetime.fromtimestamp(self.activity_info['timestamps']['start'] / 1000, tz=now().tzinfo)
         else:
             self.created_at = datetime.datetime.fromtimestamp(self.activity_info['created_at'] / 1000, tz=now().tzinfo)
