@@ -1,6 +1,7 @@
 asgiref==3.7.2
-Django==4.2.5
+Django==5.0.2
 sqlparse==0.4.4
-tzdata==2023.3
-Pillow==10.0.0
+tzdata==2024.1
+Pillow==10.2.0
 requests==2.31.0
+python-dotenv==1.0.1
