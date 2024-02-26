@@ -1,8 +1,12 @@
+import logging
 import requests
 import datetime
 
 from django.utils.timezone import now
 from django.utils.timesince import timesince
+
+from .models import IGDBGame
+from .igdb_api import IGDB
 
 
 def format_timedelta(td):
@@ -49,7 +53,9 @@ class RichPresenceActivity:
         self.name = self.activity_info['name']
         self.state = self.activity_info['state'] if 'state' in self.activity_info.keys() else ''
         if 'timestamps' in self.activity_info.keys() and 'start' in self.activity_info['timestamps'].keys():
-            self.created_at = datetime.datetime.fromtimestamp(self.activity_info['timestamps']['start'] / 1000, tz=now().tzinfo)
+            self.created_at = datetime.datetime.fromtimestamp(
+                self.activity_info['timestamps']['start'] / 1000, tz=now().tzinfo
+            )
         else:
             self.created_at = datetime.datetime.fromtimestamp(self.activity_info['created_at'] / 1000, tz=now().tzinfo)
         # get time since
@@ -63,6 +69,32 @@ class RichPresenceActivity:
                     if 'large_image' in self.activity_info['assets'].keys() else None
                 self.small_image = self.get_image_link(self.activity_info['assets']['small_image']) \
                     if 'small_image' in self.activity_info['assets'].keys() else None
+            else:
+                # First check if the game has been cached
+                game = IGDBGame.objects.filter(name=self.name).first()
+                if game and not game.needs_update():
+                    logging.debug(f"[Lanyard] Game {self.name} found in cache")
+                    self.large_image = game.cover
+                    self.small_image = None
+                else:
+                    # Find game image by name
+                    logging.debug(f"[Lanyard] Game {self.name} not found in cache")
+                    igdb = IGDB()
+                    game_info = igdb.search_game(self.name)
+                    if game_info:
+                        self.large_image = igdb.get_game_cover(game_info[0]['id'])
+                        self.small_image = None
+                        # Cache game
+                        if game:
+                            game.cover = self.large_image
+                            game.save()
+                        else:
+                            IGDBGame.objects.create(
+                                name=self.name,
+                                cover=self.large_image,
+                                igdb_id=game_info[0]['id']
+                            )
+        # check if foobar
         self.foobar()
 
     def foobar(self):
@@ -80,7 +112,6 @@ class RichPresenceActivity:
             else:
                 self.str_progress = "Paused"
                 self.progress = 100
-
 
     def get_image_link(self, image_id: str):
         if image_id.startswith("mp:external"):

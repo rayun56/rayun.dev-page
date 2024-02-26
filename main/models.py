@@ -3,6 +3,7 @@ import hashlib
 
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from django.utils import timezone
 
 
 class Tag(models.Model):
@@ -48,3 +49,28 @@ class CrudtoberDay(models.Model):
 
     def __str__(self):
         return f"Day {self.day}"
+
+
+class IGDBCredential(models.Model):
+    access_token = models.CharField(max_length=100)
+    client_id = models.CharField(max_length=100)
+    expires = models.DateTimeField()
+
+    def __str__(self):
+        return f"IGDB Credential"
+
+    def is_expired(self):
+        return self.expires < timezone.now()
+
+
+class IGDBGame(models.Model):
+    name = models.CharField(max_length=100)
+    cover = models.URLField()
+    added_on = models.DateTimeField(auto_now_add=True)
+    igdb_id = models.IntegerField(primary_key=True)
+
+    def __str__(self):
+        return self.name
+
+    def needs_update(self):
+        return timezone.now() - self.added_on > timezone.timedelta(days=7)

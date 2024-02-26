@@ -19,14 +19,16 @@
                             style="height: 100px; width: auto;"
                         >
                     </div>
-                    <div id="lanyard-small-img">
-                        <img
-                            src="{{ activity.small_image }}"
-                            alt="{{ activity.state }}"
-                            class="rounded mt-1 ms-1"
-                            style="height: 30px; width: auto;"
-                        >
-                    </div>
+                    {% if activity.small_image %}
+                        <div id="lanyard-small-img">
+                            <img
+                                src="{{ activity.small_image }}"
+                                alt="{{ activity.state }}"
+                                class="rounded mt-1 ms-1"
+                                style="height: 30px; width: auto;"
+                            >
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="col-sm-auto">
                     <div class="container-fluid justify-content-left">
