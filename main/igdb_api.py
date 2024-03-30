@@ -9,6 +9,11 @@ from django.utils.timezone import now
 from .models import IGDBCredential
 
 
+def sanitize_query(query: str) -> str:
+    # Remove all non-alphanumeric characters, excluding spaces
+    return ''.join(e for e in query if e.isalnum() or e.isspace())
+
+
 class IGDB:
     def __init__(self):
         self.access_token = None
@@ -48,6 +53,7 @@ class IGDB:
 
     def search_game(self, query: str):
         url = f'{self.api_url}/games'
+        query = sanitize_query(query)
         data = f'fields name, cover.url; search "{query}"; limit 10;'
         response = requests.post(url, headers=self.headers, data=data)
         return response.json()

@@ -72,8 +72,14 @@ class RichPresenceActivity:
             else:
                 # First check if the game has been cached
                 game = IGDBGame.objects.filter(name=self.name).first()
-                if game and not game.needs_update():
+                if game:
                     logging.debug(f"[Lanyard] Game {self.name} found in cache")
+                    if game.needs_update():
+                        logging.debug(f"[Lanyard] Game {self.name} needs update, getting image from IGDB")
+                        igdb = IGDB()
+                        cover = igdb.get_game_cover(game.igdb_id)
+                        game.cover = cover
+                        game.save()
                     self.large_image = game.cover
                     self.small_image = None
                 else:

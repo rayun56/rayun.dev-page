@@ -2,3 +2,4 @@
 /homepage/settings.py
 /media/
 /.env
+/main/migrations/

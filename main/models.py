@@ -66,11 +66,11 @@ class IGDBCredential(models.Model):
 class IGDBGame(models.Model):
     name = models.CharField(max_length=100)
     cover = models.URLField()
-    added_on = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
     igdb_id = models.IntegerField(primary_key=True)
 
     def __str__(self):
         return self.name
 
     def needs_update(self):
-        return timezone.now() - self.added_on > timezone.timedelta(days=7)
+        return timezone.now() - self.updated > timezone.timedelta(days=7)
