@@ -86,7 +86,9 @@ class RichPresenceActivity:
                     # Find game image by name
                     logging.debug(f"[Lanyard] Game {self.name} not found in cache")
                     igdb = IGDB()
-                    game_info = igdb.search_game(self.name)
+                    # Filter out all non-alphanumeric characters and replace the rest with spaces
+                    sanitized_name = ''.join(e if e.isalnum() else ' ' for e in self.name)
+                    game_info = igdb.search_game(sanitized_name)
                     if game_info:
                         self.large_image = igdb.get_game_cover(game_info[0]['id'])
                         self.small_image = None
