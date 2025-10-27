@@ -1,4 +1,6 @@
 import logging
+
+import aiohttp
 import requests
 import datetime
 
@@ -10,9 +12,15 @@ from .igdb_api import IGDB
 
 
 def format_timedelta(td):
+    # Format a timedelta to H:MM:SS or M:SS
     total_seconds = int(td.total_seconds())
-    minutes, seconds = divmod(total_seconds, 60)
-    return f"{minutes}:{seconds:02}"
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    if hours > 0:
+        return f"{hours}:{minutes:02}:{seconds:02}"
+    else:
+        return f"{minutes}:{seconds:02}"
+
 
 
 class DiscordUser:
@@ -41,10 +49,11 @@ class RichPresenceActivity:
         self.application_id = None
         self.large_image = None
         self.small_image = None
+        self.large_alt = None
+        self.small_alt = None
         self.created_at = None
         self.time_since = None
         self.type = None
-        self.is_foobar = False
         self.parse()
 
     def parse(self):
@@ -60,16 +69,19 @@ class RichPresenceActivity:
             self.created_at = datetime.datetime.fromtimestamp(self.activity_info['created_at'] / 1000, tz=now().tzinfo)
         # get time since
         self.time_since = timesince(self.created_at, now())
-        if self.type == 0:
+
+        # Get url and alt text for images
+        if 'assets' in self.activity_info.keys():
+            self.large_image = self.get_image_link(self.activity_info['assets'].get('large_image'))
+            self.small_image = self.get_image_link(self.activity_info['assets'].get('small_image'))
+            self.large_alt = self.activity_info['assets'].get('large_text', self.state)
+            self.small_alt = self.activity_info['assets'].get('small_text', self.state)
+
+        if self.type == 0:  # Playing...
             self.details = self.activity_info['details'] if 'details' in self.activity_info.keys() else ''
             self.application_id = self.activity_info['application_id'] if 'application_id' in self.activity_info.keys() else ''
-            # Get url for images
-            if 'assets' in self.activity_info.keys():
-                self.large_image = self.get_image_link(self.activity_info['assets']['large_image']) \
-                    if 'large_image' in self.activity_info['assets'].keys() else None
-                self.small_image = self.get_image_link(self.activity_info['assets']['small_image']) \
-                    if 'small_image' in self.activity_info['assets'].keys() else None
-            else:
+
+            if not self.large_image:
                 # First check if the game has been cached
                 game = IGDBGame.objects.filter(name=self.name).first()
                 if game:
@@ -102,26 +114,36 @@ class RichPresenceActivity:
                                 cover=self.large_image,
                                 igdb_id=game_info[0]['id']
                             )
-        # check if foobar
-        self.foobar()
 
-    def foobar(self):
-        if self.name == "foobar2000":
-            self.is_foobar = True
-            self.artist = self.details
-            self.title = self.state[:self.state.rindex("{") - 1]
-            self.length = self.state[self.state.rindex("{") + 1:self.state.rindex("}")]
+        elif self.type == 2:  # Listening to...
+            # Get all music-specific info
+            self.title = self.activity_info.get('details')
+            self.artist = self.activity_info.get('state')
+            self.album = self.large_alt if self.large_alt else ''  # Sometimes album is in large_alt
+
+        elif self.type == 3:  # Watching...
+            self.details = self.activity_info.get('details', '')
+
+        if self.type == 2 or self.type == 3:
+            # Calculate the progress if timestamps are available
             if 'timestamps' in self.activity_info.keys():
-                self.str_progress = f"{format_timedelta(now() - self.created_at)} / {self.length}"
-                self.progress = ((now() - self.created_at).total_seconds() /
-                                 datetime.timedelta(
-                                     minutes=int(self.length.split(":")[0]),
-                                     seconds=int(self.length.split(":")[1])).total_seconds() * 100)
-            else:
-                self.str_progress = "Paused"
-                self.progress = 100
+                start = self.activity_info['timestamps'].get('start')
+                end = self.activity_info['timestamps'].get('end')
+                if start and end:
+                    current = now() - datetime.datetime.fromtimestamp(start / 1000, tz=now().tzinfo)
+                    total = (
+                            datetime.datetime.fromtimestamp(end / 1000, tz=now().tzinfo) -
+                            datetime.datetime.fromtimestamp(start / 1000, tz=now().tzinfo)
+                    )
+                    self.str_progress = f"{format_timedelta(current)} / {format_timedelta(total)}"
+                    self.progress = current.total_seconds() / total.total_seconds() * 100
+                else:
+                    self.str_progress = None
+
 
     def get_image_link(self, image_id: str):
+        if not image_id:
+            return None
         if image_id.startswith("mp:external"):
             link = f"https://images-ext-1.discordapp.net/external/{image_id[image_id.index('/') + 1:]}"
         else:
@@ -147,15 +169,17 @@ class Lanyard:
         self.user_id = user_id
         self.url = f"https://api.lanyard.rest/v1/users/{self.user_id}"
 
-    def get_info(self):
-        response = requests.get(self.url)
-        if response.status_code == 200:
-            return DiscordPresence(response.json())
-        else:
-            return None
+    async def get_info(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self.url) as response:
+                if response.status == 200:
+                    return DiscordPresence(await response.json())
+                else:
+                    return None
 
-    def get_dict(self):
-        info = self.get_info()
+
+    async def get_dict(self):
+        info = await self.get_info()
         if info is not None:
             return {
                 'user': {
@@ -164,4 +188,9 @@ class Lanyard:
                     'display_name': info.user.display_name
                 },
                 'activities': info.activities
+            }
+        else:
+            return {
+                'user': None,
+                'activities': []
             }

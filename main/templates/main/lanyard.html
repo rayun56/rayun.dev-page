@@ -7,10 +7,10 @@
     <h4 class="text-center">Current Status</h4>
 {% endif %}
 {% for activity in activities %}
-    {% if activity.type == 0 %}
+    {% if activity.type == 0 or activity.type == 2 or activity.type == 3 %}
         <div class="card bg-dark text-white mb-2">
             <div class="row justify-content-left">
-                <div class="col-sm-auto">
+                <div class="col-sm-3">
                     <div id="lanyard-large-img" class="card-img">
                         <img
                             src="{{ activity.large_image }}"
@@ -30,25 +30,13 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-sm-auto">
+                <div class="col-sm-9">
                     <div class="container-fluid justify-content-left">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                {% if activity.state %}
-                                    {{ activity.name }}
-                                {% else %}
+                            {% if activity.type == 0 %} {# Playing... #}
+                                <h5 class="card-title">
                                     Playing <b>{{ activity.name }}</b>
-                                {% endif %}
-                            </h5>
-                            {% if activity.is_foobar %}
-                                <p class="card-text text-left mb-0">
-                                    {{ activity.title }} - {{ activity.artist }}<br>
-                                    {{ activity.str_progress }}
-                                </p>
-                                <div class="progress mt-0" style="height: 8px">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ activity.progress }}%;" aria-valuenow="{{ activity.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            {% else %}
+                                </h5>
                                 <p class="card-text text-left">
                                     {% if activity.details %}
                                         {{ activity.details }}<br>
@@ -58,6 +46,38 @@
                                     {% endif %}
                                     For {{ activity.time_since }}
                                 </p>
+                            {% elif activity.type == 2 %} {# Listening to... #}
+                                <h5 class="card-title">
+                                    Listening with <b>{{ activity.name }}</b>
+                                </h5>
+                                <p class="card-text text-left mb-0">
+                                    {{ activity.title }} - {{ activity.artist }}<br>
+                                    {{ activity.album }}<br>
+                                    {{ activity.str_progress }}
+                                </p>
+                                <div class="card-text progress mt-0" style="height: 8px">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ activity.progress }}%;" aria-valuenow="{{ activity.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            {% elif activity.type == 3 %} {# Watching... #}
+                                <h5 class="card-title">
+                                    Watching <b>{{ activity.details }}</b> with <b>{{ activity.name }}</b>
+                                </h5>
+                                <p class="card-text text-left">
+                                    {{ activity.state }}<br>
+                                    {% if activity.large_alt != activity.name %}
+                                        {{ activity.large_alt }}<br>
+                                    {% endif %}
+                                    {% if activity.str_progress %}
+                                        {{ activity.str_progress }}<br>
+                                    {% elif activity.time_since %}
+                                        For {{ activity.time_since }}
+                                    {% endif %}
+                                </p>
+                                {% if activity.progress %}
+                                    <div class="card-text progress mt-0" style="height: 8px">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ activity.progress }}%;" aria-valuenow="{{ activity.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

@@ -2,6 +2,7 @@ import random
 
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.cache import never_cache
 
 from .models import Project, CrudtoberDay
 from .lanyard_api import Lanyard
@@ -50,6 +51,8 @@ def reserved(request):
     return render(request, 'main/reserved.html')
 
 
-def lanyard(request):
+@never_cache
+async def lanyard(request):
     lan = Lanyard(344303001965428736)
-    return render(request, 'main/lanyard.html', lan.get_dict())
+    context = await lan.get_dict()
+    return render(request, 'main/lanyard.html', context)
